@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Porcentajes - Fundamentos de computacion III</title>
+    <script src="https://kit.fontawesome.com/7c17e3fdd4.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #43e97b;
+        }
+
+        .tab.active {
+            color: #43e97b;
+            border-bottom-color: #43e97b;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 3px solid #43e97b;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #38f9d7;
+            box-shadow: 0 0 0 4px rgba(67, 233, 123, 0.2);
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #43e97b;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-box h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .result-box .result-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-box .result-detail {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .example-box {
+            background: #e8f5e9;
+            border: 2px solid #43e97b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .example-box h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .example-box p {
+            color: #2e7d32;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .quick-calc {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .quick-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid #43e97b;
+            color: #43e97b;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .calculator-card {
+                padding: 25px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .tab {
+                white-space: nowrap;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .result-box .result-value {
+                font-size: 36px;
+            }
+
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="calculadoras.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Regresar</span>
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-percent"></i> Calculadora de Porcentajes</h1>
+            <p>Calcula porcentajes de forma rápida y sencilla</p>
+        </div>
+
+        <div class="calculator-card">
+            <div class="tabs">
+                <button class="tab active" onclick="cambiarTab(0)">¿Cuánto es el X%?</button>
+                <button class="tab" onclick="cambiarTab(1)">¿Qué % es?</button>
+                <button class="tab" onclick="cambiarTab(2)">Cambio Porcentual</button>
+            </div>
+
+            <!-- Tab 1: ¿Cuánto es el X% de Y? -->
+            <div class="tab-content active" id="tab0">
+                <div class="example-box">
+                    <h4><i class="fas fa-lightbulb"></i> Ejemplo</h4>
+                    <p>¿Cuánto es el 20% de 500? Respuesta: 100</p>
+                </div>
+
+                <div class="input-group">
+                    <label>¿Cuánto es el</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="percent1" placeholder="20" step="0.01">
+                        <span class="input-suffix">%</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>de</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="total1" placeholder="500" step="0.01">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calcularTab1()">
+                    <i class="fas fa-calculator"></i>
+                    Calcular
+                </button>
+
+                <div class="result-box" id="result1">
+                    <h3>Resultado:</h3>
+                    <div class="result-value" id="resultValue1">0</div>
+                    <div class="result-detail" id="resultDetail1"></div>
+                </div>
+
+                <div class="error-message" id="error1">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText1"></span>
+                </div>
+
+                <div class="quick-calc">
+                    <button class="quick-btn" onclick="calcularRapido(10)">10%</button>
+                    <button class="quick-btn" onclick="calcularRapido(15)">15%</button>
+                    <button class="quick-btn" onclick="calcularRapido(20)">20%</button>
+                    <button class="quick-btn" onclick="calcularRapido(25)">25%</button>
+                    <button class="quick-btn" onclick="calcularRapido(50)">50%</button>
+                </div>
+            </div>
+
+            <!-- Tab 2: ¿Qué porcentaje es X de Y? -->
+            <div class="tab-content" id="tab1">
+                <div class="example-box">
+                    <h4><i class="fas fa-lightbulb"></i> Ejemplo</h4>
+                    <p>¿Qué porcentaje es 50 de 200? Respuesta: 25%</p>
+                </div>
+
+                <div class="input-group">
+                    <label>¿Qué porcentaje es</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="parte2" placeholder="50" step="0.01">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>de</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="total2" placeholder="200" step="0.01">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calcularTab2()">
+                    <i class="fas fa-calculator"></i>
+                    Calcular
+                </button>
+
+                <div class="result-box" id="result2">
+                    <h3>Resultado:</h3>
+                    <div class="result-value" id="resultValue2">0%</div>
+                    <div class="result-detail" id="resultDetail2"></div>
+                </div>
+
+                <div class="error-message" id="error2">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText2"></span>
+                </div>
+            </div>
+
+            <!-- Tab 3: Cambio porcentual -->
+            <div class="tab-content" id="tab2">
+                <div class="example-box">
+                    <h4><i class="fas fa-lightbulb"></i> Ejemplo</h4>
+                    <p>Cambio de 100 a 150 = +50% de aumento</p>
+                </div>
+
+                <div class="input-group">
+                    <label>Valor inicial</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="valorInicial" placeholder="100" step="0.01">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Valor final</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="valorFinal" placeholder="150" step="0.01">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calcularTab3()">
+                    <i class="fas fa-calculator"></i>
+                    Calcular
+                </button>
+
+                <div class="result-box" id="result3">
+                    <h3>Cambio Porcentual:</h3>
+                    <div class="result-value" id="resultValue3">0%</div>
+                    <div class="result-detail" id="resultDetail3"></div>
+                </div>
+
+                <div class="error-message" id="error3">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText3"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cambiarTab(index) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Mostrar el tab seleccionado
+            document.querySelectorAll('.tab')[index].classList.add('active');
+            document.getElementById('tab' + index).classList.add('active');
+            
+            // Ocultar todos los resultados y errores
+            ocultarResultadosYErrores();
+        }
+
+        function ocultarResultadosYErrores() {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('result' + i).classList.remove('show');
+                document.getElementById('error' + i).classList.remove('show');
+            }
+        }
+
+        function calcularTab1() {
+            const percent = parseFloat(document.getElementById('percent1').value);
+            const total = parseFloat(document.getElementById('total1').value);
+            const error = document.getElementById('error1');
+            const errorText = document.getElementById('errorText1');
+            const result = document.getElementById('result1');
+            
+            error.classList.remove('show');
+            
+            if (isNaN(percent) || isNaN(total)) {
+                errorText.textContent = 'Por favor ingresa valores válidos';
+                error.classList.add('show');
+                result.classList.remove('show');
+                return;
+            }
+            
+            const resultado = (percent / 100) * total;
+            document.getElementById('resultValue1').textContent = resultado.toFixed(2);
+            document.getElementById('resultDetail1').textContent = `El ${percent}% de ${total} es ${resultado.toFixed(2)}`;
+            result.classList.add('show');
+        }
+
+        function calcularTab2() {
+            const parte = parseFloat(document.getElementById('parte2').value);
+            const total = parseFloat(document.getElementById('total2').value);
+            const error = document.getElementById('error2');
+            const errorText = document.getElementById('errorText2');
+            const result = document.getElementById('result2');
+            
+            error.classList.remove('show');
+            
+            if (isNaN(parte) || isNaN(total)) {
+                errorText.textContent = 'Por favor ingresa valores válidos';
+                error.classList.add('show');
+                result.classList.remove('show');
+                return;
+            }
+            
+            if (total === 0) {
+                errorText.textContent = 'El total no puede ser cero';
+                error.classList.add('show');
+                result.classList.remove('show');
+                return;
+            }
+            
+            const porcentaje = (parte / total) * 100;
+            document.getElementById('resultValue2').textContent = porcentaje.toFixed(2) + '%';
+            document.getElementById('resultDetail2').textContent = `${parte} es el ${porcentaje.toFixed(2)}% de ${total}`;
+            result.classList.add('show');
+        }
+
+        function calcularTab3() {
+            const inicial = parseFloat(document.getElementById('valorInicial').value);
+            const final = parseFloat(document.getElementById('valorFinal').value);
+            const error = document.getElementById('error3');
+            const errorText = document.getElementById('errorText3');
+            const result = document.getElementById('result3');
+            
+            error.classList.remove('show');
+            
+            if (isNaN(inicial) || isNaN(final)) {
+                errorText.textContent = 'Por favor ingresa valores válidos';
+                error.classList.add('show');
+                result.classList.remove('show');
+                return;
+            }
+            
+            if (inicial === 0) {
+                errorText.textContent = 'El valor inicial no puede ser cero';
+                error.classList.add('show');
+                result.classList.remove('show');
+                return;
+            }
+            
+            const cambio = ((final - inicial) / inicial) * 100;
+            const signo = cambio >= 0 ? '+' : '';
+            const tipo = cambio >= 0 ? 'aumento' : 'disminución';
+            
+            document.getElementById('resultValue3').textContent = signo + cambio.toFixed(2) + '%';
+            document.getElementById('resultDetail3').textContent = `Hay un ${tipo} del ${Math.abs(cambio).toFixed(2)}% de ${inicial} a ${final}`;
+            result.classList.add('show');
+        }
+
+        function calcularRapido(porcentaje) {
+            document.getElementById('percent1').value = porcentaje;
+            if (document.getElementById('total1').value) {
+                calcularTab1();
+            }
+        }
+
+        // Permitir calcular con Enter
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const tabActivo = document.querySelector('.tab.active');
+                    const index = Array.from(document.querySelectorAll('.tab')).indexOf(tabActivo);
+                    if (index === 0) calcularTab1();
+                    else if (index === 1) calcularTab2();
+                    else if (index === 2) calcularTab3();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

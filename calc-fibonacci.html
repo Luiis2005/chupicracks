@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibonacci - Fundamentos de computacion III</title>
+    <script src="https://kit.fontawesome.com/7c17e3fdd4.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section label {
+            display: block;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 3px solid #f093fb;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #f5576c;
+            box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2);
+        }
+
+        .btn-calculate {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-calculate:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box p {
+            color: #856404;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .results-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .results-card.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f093fb;
+        }
+
+        .results-header h2 {
+            color: #f5576c;
+            font-size: 28px;
+        }
+
+        .btn-clear {
+            padding: 10px 25px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-clear:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+
+        .sequence-display {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .sequence-display h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .sequence-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .fib-number {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #f093fb;
+            transition: all 0.3s ease;
+        }
+
+        .fib-number:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
+        }
+
+        .fib-number .index {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .fib-number .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f5576c;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-box p {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .calculator-card {
+                padding: 25px;
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+            }
+
+            .btn-calculate {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .sequence-list {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="calculadoras.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Regresar</span>
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-infinity"></i> Secuencia de Fibonacci</h1>
+            <p>Calcula la secuencia hasta el número que especifiques</p>
+        </div>
+
+        <div class="calculator-card">
+            <div class="info-box">
+                <h3><i class="fas fa-info-circle"></i> ¿Qué es Fibonacci?</h3>
+                <p>La secuencia de Fibonacci es una serie donde cada número es la suma de los dos anteriores: 0, 1, 1, 2, 3, 5, 8, 13, 21...</p>
+            </div>
+
+            <div class="input-section">
+                <label for="fibInput">¿Cuántos números de Fibonacci deseas calcular?</label>
+                <div class="input-wrapper">
+                    <input type="number" id="fibInput" placeholder="Ejemplo: 10" min="1" max="100">
+                    <button class="btn-calculate" onclick="calcularFibonacci()">
+                        <i class="fas fa-calculator"></i>
+                        Calcular
+                    </button>
+                </div>
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+            <div class="results-header">
+                <h2><i class="fas fa-list"></i> Resultados</h2>
+                <button class="btn-clear" onclick="limpiar()">
+                    <i class="fas fa-trash"></i>
+                    Limpiar
+                </button>
+            </div>
+
+            <div class="sequence-display">
+                <h3>Secuencia completa:</h3>
+                <div class="sequence-list" id="sequenceList"></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h4>Total de números</h4>
+                    <p id="totalNumbers">0</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Último número</h4>
+                    <p id="lastNumber">0</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Suma total</h4>
+                    <p id="sumTotal">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calcularFibonacci() {
+            const input = document.getElementById('fibInput');
+            const n = parseInt(input.value);
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+
+            // Validaciones
+            errorMessage.classList.remove('show');
+            
+            if (!n || isNaN(n)) {
+                errorText.textContent = 'Por favor ingresa un número válido';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            if (n < 1) {
+                errorText.textContent = 'El número debe ser mayor a 0';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            if (n > 100) {
+                errorText.textContent = 'Por favor ingresa un número menor o igual a 100';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            // Calcular secuencia
+            const secuencia = [];
+            let a = 0, b = 1;
+
+            for (let i = 0; i < n; i++) {
+                secuencia.push(a);
+                let temp = a;
+                a = b;
+                b = temp + b;
+            }
+
+            // Mostrar resultados
+            mostrarResultados(secuencia);
+        }
+
+        function mostrarResultados(secuencia) {
+            const resultsCard = document.getElementById('resultsCard');
+            const sequenceList = document.getElementById('sequenceList');
+            const totalNumbers = document.getElementById('totalNumbers');
+            const lastNumber = document.getElementById('lastNumber');
+            const sumTotal = document.getElementById('sumTotal');
+
+            // Limpiar resultados anteriores
+            sequenceList.innerHTML = '';
+
+            // Crear elementos para cada número
+            secuencia.forEach((num, index) => {
+                const fibElement = document.createElement('div');
+                fibElement.className = 'fib-number';
+                fibElement.innerHTML = `
+                    <div class="index">F(${index})</div>
+                    <div class="value">${num}</div>
+                `;
+                sequenceList.appendChild(fibElement);
+            });
+
+            // Calcular estadísticas
+            const suma = secuencia.reduce((acc, num) => acc + num, 0);
+
+            totalNumbers.textContent = secuencia.length;
+            lastNumber.textContent = secuencia[secuencia.length - 1];
+            sumTotal.textContent = suma.toLocaleString();
+
+            // Mostrar card de resultados
+            resultsCard.classList.add('show');
+            
+            // Scroll suave hacia los resultados
+            setTimeout(() => {
+                resultsCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function limpiar() {
+            document.getElementById('fibInput').value = '';
+            document.getElementById('resultsCard').classList.remove('show');
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('fibInput').focus();
+        }
+
+        // Permitir calcular con Enter
+        document.getElementById('fibInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calcularFibonacci();
+            }
+        });
+
+        // Ocultar error al escribir
+        document.getElementById('fibInput').addEventListener('input', function() {
+            document.getElementById('errorMessage').classList.remove('show');
+        });
+    </script>
+</body>
+</html>

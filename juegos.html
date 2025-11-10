@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juegos - Fundamentos de computacion III</title>
+    <script src="https://kit.fontawesome.com/7c17e3fdd4.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .games-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .game-section {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .game-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            transition: all 0.5s ease;
+            z-index: 1;
+        }
+
+        .game-section:hover::before {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        .game-section:hover {
+            flex: 1.1;
+        }
+
+        .memorama {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gato {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            transition: transform 0.5s ease;
+        }
+
+        .game-section:hover .game-content {
+            transform: scale(1.1);
+        }
+
+        .game-icon {
+            font-size: 120px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .game-title {
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .game-description {
+            font-size: 18px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .game-section:hover .game-description {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .games-container {
+                flex-direction: column;
+            }
+
+            .game-title {
+                font-size: 36px;
+            }
+
+            .game-icon {
+                font-size: 80px;
+            }
+
+            .back-btn {
+                top: 15px;
+                left: 15px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Volver</span>
+    </a>
+
+    <div class="games-container">
+        <div class="game-section memorama" onclick="playGame('memorama')">
+            <div class="game-content">
+                <div class="game-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h1 class="game-title">MEMORAMA</h1>
+                <p class="game-description">Pon a prueba tu memoria</p>
+            </div>
+        </div>
+
+        <div class="game-section gato" onclick="playGame('gato')">
+            <div class="game-content">
+                <div class="game-icon">
+                    <i class="fas fa-times"></i>
+                </div>
+                <h1 class="game-title">JUEGO DEL GATO</h1>
+                <p class="game-description">Tres en raya clásico</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function playGame(game) {
+            if (game === 'memorama') {
+                window.location.href = 'memorama.html';
+            } else if (game === 'gato') {
+                window.location.href = 'gato.html';
+            }
+        }
+    </script>
+</body>
+</html>

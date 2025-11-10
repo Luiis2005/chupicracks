@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMC - Fundamentos de computacion III</title>
+    <script src="https://kit.fontawesome.com/7c17e3fdd4.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box p {
+            color: #e65100;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px 60px 15px 20px;
+            border: 3px solid #fa709a;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #fee140;
+            box-shadow: 0 0 0 4px rgba(250, 112, 154, 0.2);
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fa709a;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .gender-selector {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .gender-btn {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #fa709a;
+            background: white;
+            color: #fa709a;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .gender-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .gender-btn.active {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            border-color: #fee140;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .error-message {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .results-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .results-card.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-header h2 {
+            color: #fa709a;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .imc-display {
+            text-align: center;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .imc-value {
+            font-size: 64px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .imc-category {
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .imc-subcategory {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .imc-bajo-peso {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .imc-normal {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .imc-sobrepeso {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .imc-obesidad {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .imc-scale {
+            margin-bottom: 30px;
+        }
+
+        .imc-scale h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .scale-bar {
+            height: 40px;
+            border-radius: 20px;
+            background: linear-gradient(to right, 
+                #4facfe 0%, #4facfe 18.5%,
+                #43e97b 18.5%, #43e97b 25%,
+                #fee140 25%, #fee140 30%,
+                #fa709a 30%, #fa709a 100%);
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .scale-marker {
+            position: absolute;
+            top: -10px;
+            width: 4px;
+            height: 60px;
+            background: white;
+            border: 3px solid #333;
+            border-radius: 5px;
+            transition: left 0.5s ease;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 12px;
+            padding: 0 10px;
+        }
+
+        .recommendations {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .recommendations h3 {
+            color: #fa709a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations li {
+            padding: 10px 0;
+            color: #555;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .recommendations li i {
+            color: #43e97b;
+            margin-top: 3px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #fa709a;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-box p {
+            color: #fa709a;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 15px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-reset:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .calculator-card {
+                padding: 25px;
+            }
+
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+
+            .imc-value {
+                font-size: 48px;
+            }
+
+            .imc-category {
+                font-size: 22px;
+            }
+
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="calculadoras.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Regresar</span>
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-heartbeat"></i> Calculadora de IMC</h1>
+            <p>Calcula tu Índice de Masa Corporal</p>
+        </div>
+
+        <div class="calculator-card">
+            <div class="info-box">
+                <h3><i class="fas fa-info-circle"></i> ¿Qué es el IMC?</h3>
+                <p>El Índice de Masa Corporal (IMC) es una medida que relaciona tu peso con tu altura para determinar si estás en un rango de peso saludable.</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label><i class="fas fa-weight"></i> Peso</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="peso" placeholder="70" step="0.1" min="0">
+                        <span class="input-suffix">kg</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fas fa-ruler-vertical"></i> Altura</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="altura" placeholder="170" step="0.1" min="0">
+                        <span class="input-suffix">cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-venus-mars"></i> Género (opcional)</label>
+                <div class="gender-selector">
+                    <button class="gender-btn" id="masculino" onclick="seleccionarGenero('masculino')">
+                        <i class="fas fa-mars"></i> Masculino
+                    </button>
+                    <button class="gender-btn" id="femenino" onclick="seleccionarGenero('femenino')">
+                        <i class="fas fa-venus"></i> Femenino
+                    </button>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calcularIMC()">
+                <i class="fas fa-calculator"></i>
+                Calcular IMC
+            </button>
+
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+            <div class="results-header">
+                <h2>Tu Resultado</h2>
+            </div>
+
+            <div class="imc-display" id="imcDisplay">
+                <div class="imc-value" id="imcValue">0</div>
+                <div class="imc-category" id="imcCategory">-</div>
+                <div class="imc-subcategory" id="imcSubcategory">-</div>
+            </div>
+
+            <div class="imc-scale">
+                <h3>Tu posición en la escala del IMC</h3>
+                <div class="scale-bar">
+                    <div class="scale-marker" id="scaleMarker"></div>
+                </div>
+                <div class="scale-labels">
+                    <span>&lt;18.5</span>
+                    <span>18.5-24.9</span>
+                    <span>25-29.9</span>
+                    <span>30+</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h4>Peso Actual</h4>
+                    <p id="statPeso">-</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Altura</h4>
+                    <p id="statAltura">-</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Peso Ideal Min</h4>
+                    <p id="statPesoMin">-</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Peso Ideal Max</h4>
+                    <p id="statPesoMax">-</p>
+                </div>
+            </div>
+
+            <div class="recommendations" id="recommendations">
+                <h3><i class="fas fa-clipboard-list"></i> Recomendaciones</h3>
+                <ul id="recommendationsList"></ul>
+            </div>
+
+            <button class="btn-reset" onclick="resetear()">
+                <i class="fas fa-redo"></i>
+                Calcular de nuevo
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let generoSeleccionado = null;
+
+        function seleccionarGenero(genero) {
+            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(genero).classList.add('active');
+            generoSeleccionado = genero;
+        }
+
+        function calcularIMC() {
+            const peso = parseFloat(document.getElementById('peso').value);
+            const alturaCm = parseFloat(document.getElementById('altura').value);
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+
+            errorMessage.classList.remove('show');
+
+            // Validaciones
+            if (isNaN(peso) || isNaN(alturaCm)) {
+                errorText.textContent = 'Por favor ingresa valores válidos para peso y altura';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            if (peso <= 0 || alturaCm <= 0) {
+                errorText.textContent = 'Los valores deben ser mayores a 0';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            if (peso > 500 || alturaCm > 300) {
+                errorText.textContent = 'Por favor verifica los valores ingresados';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            // Convertir altura a metros
+            const alturaM = alturaCm / 100;
+
+            // Calcular IMC
+            const imc = peso / (alturaM * alturaM);
+
+            // Mostrar resultados
+            mostrarResultados(imc, peso, alturaM);
+        }
+
+        function mostrarResultados(imc, peso, alturaM) {
+            const imcValue = document.getElementById('imcValue');
+            const imcCategory = document.getElementById('imcCategory');
+            const imcSubcategory = document.getElementById('imcSubcategory');
+            const imcDisplay = document.getElementById('imcDisplay');
+            const scaleMarker = document.getElementById('scaleMarker');
+
+            imcValue.textContent = imc.toFixed(1);
+
+            let categoria, subcategoria, clase, posicion, recomendaciones;
+
+            if (imc < 18.5) {
+                categoria = 'Bajo Peso';
+                subcategoria = 'Por debajo del peso saludable';
+                clase = 'imc-bajo-peso';
+                posicion = (imc / 18.5) * 18.5;
+                recomendaciones = [
+                    'Consulta con un nutricionista para un plan de alimentación',
+                    'Considera aumentar tu ingesta calórica de forma saludable',
+                    'Incluye alimentos ricos en proteínas y nutrientes',
+                    'Realiza ejercicios de fuerza para ganar masa muscular'
+                ];
+            } else if (imc < 25) {
+                categoria = 'Peso Normal';
+                subcategoria = '¡Estás en un rango saludable!';
+                clase = 'imc-normal';
+                posicion = 18.5 + ((imc - 18.5) / (25 - 18.5)) * 6.5;
+                recomendaciones = [
+                    'Mantén una dieta equilibrada y variada',
+                    'Continúa con actividad física regular',
+                    'Mantén buenos hábitos de sueño',
+                    'Hidrátate adecuadamente durante el día'
+                ];
+            } else if (imc < 30) {
+                categoria = 'Sobrepeso';
+                subcategoria = 'Por encima del peso saludable';
+                clase = 'imc-sobrepeso';
+                posicion = 25 + ((imc - 25) / (30 - 25)) * 5;
+                recomendaciones = [
+                    'Consulta con un profesional de la salud',
+                    'Adopta una dieta balanceada y reduce porciones',
+                    'Incrementa tu actividad física gradualmente',
+                    'Establece metas realistas de pérdida de peso'
+                ];
+            } else {
+                categoria = 'Obesidad';
+                if (imc < 35) {
+                    subcategoria = 'Obesidad Grado I';
+                } else if (imc < 40) {
+                    subcategoria = 'Obesidad Grado II';
+                } else {
+                    subcategoria = 'Obesidad Grado III';
+                }
+                clase = 'imc-obesidad';
+                posicion = 30 + Math.min((imc - 30) / 10, 1) * 70;
+                recomendaciones = [
+                    'Es importante consultar con un médico',
+                    'Considera un plan de alimentación supervisado',
+                    'Inicia actividad física de bajo impacto',
+                    'Busca apoyo profesional para cambios de hábitos'
+                ];
+            }
+
+            imcCategory.textContent = categoria;
+            imcSubcategory.textContent = subcategoria;
+            imcDisplay.className = 'imc-display ' + clase;
+            scaleMarker.style.left = `${posicion}%`;
+
+            // Calcular peso ideal
+            const pesoIdealMin = (18.5 * alturaM * alturaM).toFixed(1);
+            const pesoIdealMax = (24.9 * alturaM * alturaM).toFixed(1);
+
+            // Actualizar estadísticas
+            document.getElementById('statPeso').textContent = peso.toFixed(1) + ' kg';
+            document.getElementById('statAltura').textContent = (alturaM * 100).toFixed(0) + ' cm';
+            document.getElementById('statPesoMin').textContent = pesoIdealMin + ' kg';
+            document.getElementById('statPesoMax').textContent = pesoIdealMax + ' kg';
+
+            // Mostrar recomendaciones
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = '';
+            recomendaciones.forEach(rec => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check-circle"></i><span>${rec}</span>`;
+                recommendationsList.appendChild(li);
+            });
+
+            // Mostrar card de resultados
+            document.getElementById('resultsCard').classList.add('show');
+
+            // Scroll hacia resultados
+            setTimeout(() => {
+                document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function resetear() {
+            document.getElementById('peso').value = '';
+            document.getElementById('altura').value = '';
+            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+            generoSeleccionado = null;
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('resultsCard').classList.remove('show');
+            document.getElementById('peso').focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Permitir calcular con Enter
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calcularIMC();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

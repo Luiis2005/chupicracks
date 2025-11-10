@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorama - Fundamentos de computacion III</title>
+    <script src="https://kit.fontawesome.com/7c17e3fdd4.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .game-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            margin-top: 60px;
+        }
+
+        .game-header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-box h2 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        #tablita {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-collapse: separate;
+            border-spacing: 15px;
+        }
+
+        #tablita td {
+            padding: 0;
+        }
+
+        .imagen {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 3px solid #667eea;
+        }
+
+        .imagen:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .imagen.flipped {
+            animation: flip 0.6s;
+        }
+
+        .imagen.matched {
+            opacity: 0.6;
+            pointer-events: none;
+            border-color: #43e97b;
+        }
+
+        @keyframes flip {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0deg); }
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-reiniciar {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border: 3px solid #667eea;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-reiniciar:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #Salida {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            min-height: 30px;
+        }
+
+        .win-message {
+            animation: celebrate 0.6s ease-in-out;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @media (max-width: 768px) {
+            .game-header h1 {
+                font-size: 32px;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            #tablita {
+                padding: 15px;
+                border-spacing: 8px;
+            }
+
+            .imagen {
+                width: 70px;
+                height: 70px;
+            }
+
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="juegos.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Regresar</span>
+    </a>
+
+    <div class="game-header">
+        <h1><i class="fas fa-brain"></i> MEMORAMA</h1>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <h2 id="contador">0</h2>
+            <p>Pares Encontrados</p>
+        </div>
+        <div class="stat-box">
+            <h2 id="movimientos">0</h2>
+            <p>Movimientos</p>
+        </div>
+    </div>
+
+    <table id="tablita">
+        <tr>
+            <td><img src="./img/volteada.jpg" id="0" alt="" class="imagen" onclick="CambiarImagen(this, 0)"></td>
+            <td><img src="./img/volteada.jpg" id="1" alt="" class="imagen" onclick="CambiarImagen(this, 1)"></td>
+            <td><img src="./img/volteada.jpg" id="2" alt="" class="imagen" onclick="CambiarImagen(this, 2)"></td>
+            <td><img src="./img/volteada.jpg" id="3" alt="" class="imagen" onclick="CambiarImagen(this, 3)"></td>
+        </tr>
+        <tr>
+            <td><img src="./img/volteada.jpg" id="4" alt="" class="imagen" onclick="CambiarImagen(this, 4)"></td>
+            <td><img src="./img/volteada.jpg" id="5" alt="" class="imagen" onclick="CambiarImagen(this, 5)"></td>
+            <td><img src="./img/volteada.jpg" id="6" alt="" class="imagen" onclick="CambiarImagen(this, 6)"></td>
+            <td><img src="./img/volteada.jpg" id="7" alt="" class="imagen" onclick="CambiarImagen(this, 7)"></td>
+        </tr>
+        <tr>
+            <td><img src="./img/volteada.jpg" id="8" alt="" class="imagen" onclick="CambiarImagen(this, 8)"></td>
+            <td><img src="./img/volteada.jpg" id="9" alt="" class="imagen" onclick="CambiarImagen(this, 9)"></td>
+            <td><img src="./img/volteada.jpg" id="10" alt="" class="imagen" onclick="CambiarImagen(this, 10)"></td>
+            <td><img src="./img/volteada.jpg" id="11" alt="" class="imagen" onclick="CambiarImagen(this, 11)"></td>
+        </tr>
+        <tr>
+            <td><img src="./img/volteada.jpg" id="12" alt="" class="imagen" onclick="CambiarImagen(this, 12)"></td>
+            <td><img src="./img/volteada.jpg" id="13" alt="" class="imagen" onclick="CambiarImagen(this, 13)"></td>
+            <td><img src="./img/volteada.jpg" id="14" alt="" class="imagen" onclick="CambiarImagen(this, 14)"></td>
+            <td><img src="./img/volteada.jpg" id="15" alt="" class="imagen" onclick="CambiarImagen(this, 15)"></td>
+        </tr>
+    </table>
+
+    <div class="controls">
+        <button class="btn-reiniciar" onclick="Reiniciar()">
+            <i class="fas fa-redo"></i> Reiniciar Juego
+        </button>
+    </div>
+
+    <p id="Salida"></p>
+
+    <script>
+        let imagenes = [
+            './img/messi1.jpg',
+            './img/messi2.jpg',
+            './img/messi3.jpg',
+            './img/messi4.jpg',
+            './img/messi5.jpg',
+            './img/messi6.jpg',
+            './img/messi7.jpg',
+            './img/messi8.jpg'
+        ];
+
+        let cartasVolteadas = [];
+        let paresEncontrados = 0;
+        let movimientos = 0;
+        let bloqueado = false;
+        let imagenesAleatorias = [];
+
+        function Revolver() {
+            // Duplicar las imágenes para crear pares
+            let paresImagenes = [...imagenes, ...imagenes];
+            
+            // Mezclar aleatoriamente
+            imagenesAleatorias = paresImagenes.sort(() => Math.random() - 0.5);
+        }
+
+        function Fondo() {
+            // Resetear todas las imágenes a messi1.jpg
+            for (let i = 0; i < 16; i++) {
+                document.getElementById(i.toString()).src = './img/volteada.jpg';
+                document.getElementById(i.toString()).classList.remove('matched', 'flipped');
+            }
+        }
+
+        function CambiarImagen(elemento, index) {
+            if (bloqueado || elemento.classList.contains('matched') || cartasVolteadas.length >= 2) {
+                return;
+            }
+
+            // Si ya está volteada, no hacer nada
+            if (elemento.src.includes(imagenesAleatorias[index])) {
+                return;
+            }
+
+            elemento.src = imagenesAleatorias[index];
+            elemento.classList.add('flipped');
+            cartasVolteadas.push({elemento: elemento, index: index});
+
+            if (cartasVolteadas.length === 2) {
+                movimientos++;
+                document.getElementById('movimientos').textContent = movimientos;
+                bloqueado = true;
+                VerificarPar();
+            }
+        }
+
+        function VerificarPar() {
+            setTimeout(() => {
+                let carta1 = cartasVolteadas[0];
+                let carta2 = cartasVolteadas[1];
+
+                if (imagenesAleatorias[carta1.index] === imagenesAleatorias[carta2.index]) {
+                    // ¡Par encontrado!
+                    carta1.elemento.classList.add('matched');
+                    carta2.elemento.classList.add('matched');
+                    paresEncontrados++;
+                    document.getElementById('contador').textContent = paresEncontrados;
+
+                    if (paresEncontrados === 8) {
+                        setTimeout(() => {
+                            document.getElementById('Salida').innerHTML = '🎉 ¡FELICIDADES! ¡Ganaste! 🎉';
+                            document.getElementById('Salida').classList.add('win-message');
+                        }, 500);
+                    }
+                } else {
+                    // No es par, voltear de nuevo
+                    carta1.elemento.src = './img/volteada.jpg';
+                    carta2.elemento.src = './img/volteada.jpg';
+                    carta1.elemento.classList.remove('flipped');
+                    carta2.elemento.classList.remove('flipped');
+                }
+
+                cartasVolteadas = [];
+                bloqueado = false;
+            }, 1000);
+        }
+
+        function Reiniciar() {
+            paresEncontrados = 0;
+            movimientos = 0;
+            cartasVolteadas = [];
+            bloqueado = false;
+            document.getElementById('contador').textContent = '0';
+            document.getElementById('movimientos').textContent = '0';
+            document.getElementById('Salida').textContent = '';
+            document.getElementById('Salida').classList.remove('win-message');
+            Revolver();
+            Fondo();
+        }
+
+        // Inicializar el juego
+        window.onload = function() {
+            Revolver();
+            Fondo();
+        };
+    </script>
+</body>
+</html>

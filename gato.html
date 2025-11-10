@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego del Gato - Fundamentos de computacion III</title>
+    <script src="https://kit.fontawesome.com/7c17e3fdd4.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .game-container {
+            text-align: center;
+        }
+
+        .game-header {
+            margin-bottom: 40px;
+        }
+
+        .game-header h1 {
+            color: white;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #turno {
+            background: rgba(255, 255, 255, 0.95);
+            color: #f5576c;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+
+        table {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-collapse: separate;
+            border-spacing: 15px;
+            margin: 0 auto;
+        }
+
+        table td {
+            padding: 0;
+        }
+
+        table input[type="button"] {
+            width: 120px;
+            height: 120px;
+            font-size: 60px;
+            font-weight: bold;
+            background: white;
+            border: 4px solid #f093fb;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #f5576c;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table input[type="button"]:hover:not(:disabled) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        table input[type="button"]:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn-reiniciar {
+            background: rgba(255, 255, 255, 0.95);
+            color: #f5576c;
+            border: 3px solid #f5576c;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-reiniciar:hover {
+            background: #f5576c;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-box h3 {
+            color: #f093fb;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .win-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            text-align: center;
+            transition: transform 0.5s ease;
+        }
+
+        .win-message.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .win-message h2 {
+            color: #f5576c;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .win-message p {
+            color: #666;
+            font-size: 20px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .game-header h1 {
+                font-size: 36px;
+            }
+
+            #turno {
+                font-size: 22px;
+                padding: 12px 30px;
+            }
+
+            table {
+                padding: 20px;
+                border-spacing: 10px;
+            }
+
+            table input[type="button"] {
+                width: 80px;
+                height: 80px;
+                font-size: 40px;
+            }
+
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="juegos.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Regresar</span>
+    </a>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="win-message" id="winMessage">
+        <h2 id="winText">🎉 ¡Ganador! 🎉</h2>
+        <p id="winSubtext"></p>
+    </div>
+
+    <div class="game-container">
+        <div class="game-header">
+            <h1><i class="fas fa-times"></i> JUEGO DEL GATO</h1>
+            <h2 id="turno">Turno: O</h2>
+        </div>
+
+        <table>
+            <tr>
+                <td><input type="button" value="" onclick="Cturno(this, 0);"></td>
+                <td><input type="button" value="" onclick="Cturno(this, 1);"></td>
+                <td><input type="button" value="" onclick="Cturno(this, 2);"></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="" onclick="Cturno(this, 3);"></td>
+                <td><input type="button" value="" onclick="Cturno(this, 4);"></td>
+                <td><input type="button" value="" onclick="Cturno(this, 5);"></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="" onclick="Cturno(this, 6);"></td>
+                <td><input type="button" value="" onclick="Cturno(this, 7);"></td>
+                <td><input type="button" value="" onclick="Cturno(this, 8);"></td>
+            </tr>
+        </table>
+
+        <div class="controls">
+            <button class="btn-reiniciar" onclick="Reiniciar()">
+                <i class="fas fa-redo"></i> Reiniciar Juego
+            </button>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <h3 id="victoriasO">0</h3>
+                <p>Victorias O</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="empates">0</h3>
+                <p>Empates</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="victoriasX">0</h3>
+                <p>Victorias X</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let turnoActual = 'O';
+        let tablero = ['', '', '', '', '', '', '', '', ''];
+        let juegoActivo = true;
+        let victoriasO = 0;
+        let victoriasX = 0;
+        let empatesTotal = 0;
+
+        const combinacionesGanadoras = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
+            [0, 4, 8], [2, 4, 6]              // Diagonales
+        ];
+
+        function Cturno(boton, index) {
+            if (!juegoActivo || tablero[index] !== '') {
+                return;
+            }
+
+            tablero[index] = turnoActual;
+            boton.value = turnoActual;
+            boton.disabled = true;
+
+            if (VerificarGanador()) {
+                MostrarGanador(turnoActual);
+                if (turnoActual === 'O') {
+                    victoriasO++;
+                    document.getElementById('victoriasO').textContent = victoriasO;
+                } else {
+                    victoriasX++;
+                    document.getElementById('victoriasX').textContent = victoriasX;
+                }
+                juegoActivo = false;
+                return;
+            }
+
+            if (VerificarEmpate()) {
+                MostrarEmpate();
+                empatesTotal++;
+                document.getElementById('empates').textContent = empatesTotal;
+                juegoActivo = false;
+                return;
+            }
+
+            turnoActual = turnoActual === 'O' ? 'X' : 'O';
+            document.getElementById('turno').textContent = 'Turno: ' + turnoActual;
+        }
+
+        function VerificarGanador() {
+            for (let combinacion of combinacionesGanadoras) {
+                const [a, b, c] = combinacion;
+                if (tablero[a] && tablero[a] === tablero[b] && tablero[a] === tablero[c]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function VerificarEmpate() {
+            return tablero.every(celda => celda !== '');
+        }
+
+        function MostrarGanador(ganador) {
+            document.getElementById('winText').innerHTML = '🎉 ¡Ganó ' + ganador + '! 🎉';
+            document.getElementById('winSubtext').textContent = '¡Felicidades por tu victoria!';
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('winMessage').classList.add('show');
+        }
+
+        function MostrarEmpate() {
+            document.getElementById('winText').innerHTML = '🤝 ¡Empate! 🤝';
+            document.getElementById('winSubtext').textContent = 'Ambos jugadores empataron';
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('winMessage').classList.add('show');
+        }
+
+        function Reiniciar() {
+            turnoActual = 'O';
+            tablero = ['', '', '', '', '', '', '', '', ''];
+            juegoActivo = true;
+            document.getElementById('turno').textContent = 'Turno: O';
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('winMessage').classList.remove('show');
+
+            const botones = document.querySelectorAll('table input[type="button"]');
+            botones.forEach(boton => {
+                boton.value = '';
+                boton.disabled = false;
+            });
+        }
+
+        // Cerrar mensaje al hacer click en el overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            Reiniciar();
+        });
+    </script>
+</body>
+</html>

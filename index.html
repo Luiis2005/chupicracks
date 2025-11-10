@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos de computacion III</title>
+    <script src="https://kit.fontawesome.com/7c17e3fdd4.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+
+        .menu-btn {
+            font-size: 24px;
+            color: #667eea;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Menú desplegable del usuario */
+        .user-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-info {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        .user-info .avatar-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            margin: 0 auto 10px;
+        }
+
+        .user-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            color: #e74c3c;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #fee;
+        }
+
+        /* Menú lateral */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .menu-header {
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .menu-header h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .menu-header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .menu-items {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #f0f0f0;
+            padding-left: 30px;
+        }
+
+        .menu-item i {
+            font-size: 20px;
+            color: #667eea;
+            width: 25px;
+        }
+
+        .menu-item span {
+            font-size: 16px;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 150;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Main Content */
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card i {
+            font-size: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 15px;
+            }
+
+            .side-menu {
+                width: 250px;
+                left: -250px;
+            }
+
+            main {
+                padding: 20px 15px;
+            }
+
+            .welcome-section {
+                padding: 25px;
+            }
+
+            .welcome-section h1 {
+                font-size: 24px;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="user-profile" id="userProfile">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <!-- Dropdown del usuario -->
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-info">
+                    <div class="avatar-large">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h4 id="userName">Luis1500</h4>
+                    <p>Luis1500@gmail.com</p>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menú Lateral -->
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h3>Menú Principal</h3>
+            <p>Fundamentos de computación III</p>
+        </div>
+        <div class="menu-items">
+            <a href="#" class="menu-item" data-section="calculadoras">
+                <i class="fas fa-calculator"></i>
+                <span>Calculadoras</span>
+            </a>
+            <a href="#" class="menu-item" data-section="juegos">
+                <i class="fas fa-gamepad"></i>
+                <span>Juegos</span>
+            </a>
+            <a href="#" class="menu-item" data-section="acerca">
+                <i class="fas fa-info-circle"></i>
+                <span>Acerca de la página</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <main>
+        <div class="welcome-section">
+            <h1>Bienvenido a Fundamentos de Computación III</h1>
+            <p>Explora nuestras calculadoras, juega y aprende más sobre esta página educativa.</p>
+        </div>
+
+        <div class="cards-container">
+            <div class="card" onclick="navigateTo('calculadoras')">
+                <i class="fas fa-calculator"></i>
+                <h3>Calculadoras</h3>
+                <p>Accede a diversas calculadoras matemáticas y científicas para resolver tus problemas.</p>
+            </div>
+
+            <div class="card" onclick="navigateTo('juegos')">
+                <i class="fas fa-gamepad"></i>
+                <h3>Juegos</h3>
+                <p>Diviértete mientras aprendes con nuestros juegos educativos interactivos.</p>
+            </div>
+
+            <div class="card" onclick="navigateTo('acerca')">
+                <i class="fas fa-info-circle"></i>
+                <h3>Acerca de la Página</h3>
+                <p>Conoce más sobre este proyecto y sus objetivos educativos.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Elementos del DOM
+        const menuBtn = document.getElementById('menuBtn');
+        const sideMenu = document.getElementById('sideMenu');
+        const overlay = document.getElementById('overlay');
+        const userProfile = document.getElementById('userProfile');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userName = document.getElementById('userName');
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        // Cargar nombre de usuario
+        window.addEventListener('load', function() {
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser) {
+                userName.textContent = rememberedUser.charAt(0).toUpperCase() + rememberedUser.slice(1);
+            }
+        });
+
+        // Abrir/cerrar menú lateral
+        menuBtn.addEventListener('click', function() {
+            sideMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer click en overlay
+        overlay.addEventListener('click', function() {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            userDropdown.classList.remove('active');
+        });
+
+        // Abrir/cerrar dropdown del usuario
+        userProfile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        // Cerrar dropdown al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (!userProfile.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+
+        // Cerrar sesión
+        logoutBtn.addEventListener('click', function() {
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                localStorage.removeItem('rememberedUser');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Navegación desde el menú
+        menuItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.getAttribute('data-section');
+                navigateTo(section);
+            });
+        });
+
+        // Función de navegación
+        function navigateTo(section) {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            
+            switch(section) {
+                case 'calculadoras':
+                    window.location.href = 'calculadoras.html';
+                    break;
+                case 'juegos':
+                    window.location.href = 'juegos.html';
+                    break;
+                case 'acerca':
+                    window.location.href = 'infoo.html';
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
